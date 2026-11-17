@@ -52,6 +52,12 @@ public class ArchivoUsuarios {
 
                 usuarios.add((Usuario) elemento);
             }
+            
+            
+            
+            
+            
+            
         }
 
         return usuarios;
