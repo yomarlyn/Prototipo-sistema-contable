@@ -1,4 +1,5 @@
 
+
 package Seguridad;
 
 import java.io.IOException;
@@ -15,7 +16,7 @@ public class Autenticacion {
     }
 
     public Usuario iniciarSesion(String usuario, String contrasena)
-            throws IOException, ClassNotFoundException {
+            throws IOException {
 
         ArrayList<Usuario> usuarios = archivoUsuarios.cargarUsuarios();
 
@@ -38,3 +39,4 @@ public class Autenticacion {
         return null;
     }
 }
+

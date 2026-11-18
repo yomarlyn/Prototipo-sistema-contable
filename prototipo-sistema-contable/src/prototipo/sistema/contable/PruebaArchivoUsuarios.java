@@ -1,4 +1,5 @@
 
+
 package prototipo.sistema.contable;
 
 import java.io.IOException;
@@ -15,30 +16,12 @@ public class PruebaArchivoUsuarios {
 
         try {
 
-            // Crear un usuario de prueba
-            Usuario nuevoUsuario = new Usuario(
-                "Maria",
-                "Mencia",
-                "maria@gmail.com",
-                "Femenino",
-                "maria01",
-                "hashDePrueba",
-                "Administrador"
-            );
-
-            // Intentar agregar el usuario
-            boolean agregado = archivo.agregarUsuario(nuevoUsuario);
-
-            if (agregado) {
-                System.out.println("Usuario agregado correctamente.");
-            } else {
-                System.out.println("El usuario ya existe.");
-            }
-
-            // Recuperar los usuarios
+            // Recuperar los usuarios del archivo TXT
             ArrayList<Usuario> usuarios = archivo.cargarUsuarios();
 
             System.out.println("\n--- USUARIOS REGISTRADOS ---");
+
+            System.out.println("Cantidad de usuarios: " + usuarios.size());
 
             for (Usuario u : usuarios) {
 
@@ -50,10 +33,11 @@ public class PruebaArchivoUsuarios {
                 System.out.println("-------------------------");
             }
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
 
-            System.out.println("Error al trabajar con el archivo: " + e.getMessage());
-
+            System.out.println(
+                "Error al leer el archivo: " + e.getMessage()
+            );
         }
     }
 }

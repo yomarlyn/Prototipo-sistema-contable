@@ -82,7 +82,7 @@ public class PruebaSeguridad {
                     )
             );
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             System.out.println("Error en la prueba: " + e.getMessage());
         }
     }

@@ -1,7 +1,6 @@
 
+
 package Seguridad;
-
-
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,13 +10,14 @@ import prototipo.sistema.contable.modelo.Usuario;
 
 public class InicializadorSistema {
 
-    public static void crearSuperadministrador()
-            throws IOException, ClassNotFoundException {
+    public static void crearAdministradorInicial()
+            throws IOException {
 
         ArchivoUsuarios archivo = new ArchivoUsuarios();
 
         ArrayList<Usuario> usuarios = archivo.cargarUsuarios();
 
+        // Si ya existen usuarios, no es necesario crear otro administrador
         if (!usuarios.isEmpty()) {
             return;
         }
@@ -46,18 +46,18 @@ public class InicializadorSistema {
 
         String hash = GestorContrasenas.generarHash(contrasena);
 
-        Usuario superadmin = new Usuario(
+        Usuario administrador = new Usuario(
                 nombre,
                 apellido,
                 correo,
                 genero,
                 usuario,
                 hash,
-                "Superadministrador"
+                "Administrador"
         );
 
-        archivo.agregarUsuario(superadmin);
+        archivo.agregarUsuario(administrador);
 
-        System.out.println("Superadministrador creado correctamente.");
+        System.out.println("Administrador creado correctamente.");
     }
 }

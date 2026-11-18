@@ -245,7 +245,7 @@ public class FrmLogin extends javax.swing.JFrame {
 
             }
 
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
 
             JOptionPane.showMessageDialog(
                     this,

@@ -1,33 +1,26 @@
-package prototipo.sistema.contable.datos;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.IOException;
 
+package prototipo.sistema.contable.datos;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 import prototipo.sistema.contable.modelo.Usuario;
 
 public class ArchivoUsuarios {
+
     private final File archivo;
-    
+
     // Constructor
     public ArchivoUsuarios() {
-
-        File carpeta = new File(
-            System.getProperty("user.home"),
-            ".miSistema"
-        );
-
-        archivo = new File(carpeta, "usuarios.dat");
+        archivo = new File("usuarios.txt");
     }
-    
-        // Método para recuperar los usuarios
-    public ArrayList<Usuario> cargarUsuarios()
-            throws IOException, ClassNotFoundException {
+
+    // Método para recuperar los usuarios
+    public ArrayList<Usuario> cargarUsuarios() throws IOException {
 
         ArrayList<Usuario> usuarios = new ArrayList<>();
 
@@ -35,60 +28,77 @@ public class ArchivoUsuarios {
             return usuarios;
         }
 
-        try (ObjectInputStream entrada = new ObjectInputStream(
-                new FileInputStream(archivo))) {
+        List<String> lineas = Files.readAllLines(
+                archivo.toPath(), StandardCharsets.UTF_8);
 
-            Object objeto = entrada.readObject();
+        int numeroLinea = 0;
 
-            if (!(objeto instanceof ArrayList<?>)) {
-                throw new IOException("El archivo tiene un formato incorrecto.");
+        for (String linea : lineas) {
+            numeroLinea++;
+
+            if (linea.trim().isEmpty()) {
+                continue;
             }
 
-            for (Object elemento : (ArrayList<?>) objeto) {
+            String[] datos = linea.split(";", -1);
 
-                if (!(elemento instanceof Usuario)) {
-                    throw new IOException("Se encontró un dato inválido.");
-                }
-
-                usuarios.add((Usuario) elemento);
+            if (datos.length != 7) {
+                throw new IOException(
+                        "Formato incorrecto en la línea " + numeroLinea);
             }
-            
-            
-            
-            
-            
-            
+
+            Usuario usuario = new Usuario(
+                    datos[0],
+                    datos[1],
+                    datos[2],
+                    datos[3],
+                    datos[4],
+                    datos[5],
+                    datos[6]
+            );
+
+            usuarios.add(usuario);
         }
 
         return usuarios;
     }
-    
-        // Método para guardar los usuarios
+
+    // Método para guardar los usuarios
     public void guardarUsuarios(List<Usuario> usuarios)
             throws IOException {
 
-        File carpeta = archivo.getParentFile();
+        List<String> lineas = new ArrayList<>();
 
-        if (!carpeta.exists() && !carpeta.mkdirs()) {
-            throw new IOException("No se pudo crear la carpeta.");
+        for (Usuario u : usuarios) {
+
+            String linea =
+                    limpiar(u.getNombre()) + ";" +
+                    limpiar(u.getApellido()) + ";" +
+                    limpiar(u.getCorreo()) + ";" +
+                    limpiar(u.getGenero()) + ";" +
+                    limpiar(u.getUsuario()) + ";" +
+                    limpiar(u.getContrasena()) + ";" +
+                    limpiar(u.getTipoUsuario());
+
+            lineas.add(linea);
         }
 
-        try (ObjectOutputStream salida = new ObjectOutputStream(
-                new FileOutputStream(archivo))) {
-
-            salida.writeObject(new ArrayList<>(usuarios));
-        }
+        Files.write(
+                archivo.toPath(),
+                lineas,
+                StandardCharsets.UTF_8
+        );
     }
-    
-        // Método para agregar un usuario
+
+    // Método para agregar un usuario
     public boolean agregarUsuario(Usuario nuevoUsuario)
-            throws IOException, ClassNotFoundException {
+            throws IOException {
 
         ArrayList<Usuario> usuarios = cargarUsuarios();
 
         for (Usuario u : usuarios) {
 
-            if (u.getUsuario().equalsIgnoreCase(    //no diferencia entre mayusculas/minusculas para evitar duplicacion de usuarios
+            if (u.getUsuario().equalsIgnoreCase(
                     nuevoUsuario.getUsuario())) {
 
                 return false;
@@ -101,5 +111,17 @@ public class ArchivoUsuarios {
 
         return true;
     }
-    
+
+    // Método para limpiar los datos antes de guardarlos
+    private String limpiar(String texto) {
+
+        if (texto == null) {
+            return "";
+        }
+
+        return texto.replace(";", ",")
+                    .replace("\n", " ")
+                    .replace("\r", " ");
+    }
 }
+

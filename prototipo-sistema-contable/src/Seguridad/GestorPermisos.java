@@ -1,10 +1,12 @@
 
+
 package Seguridad;
 
 import prototipo.sistema.contable.modelo.Usuario;
 
 public class GestorPermisos {
 
+    // Verifica si el administrador puede crear un usuario
     public static boolean puedeCrearUsuario(
             Usuario usuarioActual, String tipoNuevoUsuario) {
 
@@ -14,17 +16,16 @@ public class GestorPermisos {
 
         String rolActual = usuarioActual.getTipoUsuario();
 
-        if (rolActual.equals("Superadministrador")) {
-            return true;
-        }
-
+        // El administrador puede crear administradores y usuarios
         if (rolActual.equals("Administrador")) {
-            return tipoNuevoUsuario.equals("Usuario");
+            return tipoNuevoUsuario.equals("Administrador")
+                    || tipoNuevoUsuario.equals("Usuario");
         }
 
         return false;
     }
 
+    // Verifica si puede administrar usuarios
     public static boolean puedeAdministrarUsuarios(
             Usuario usuarioActual) {
 
@@ -32,9 +33,6 @@ public class GestorPermisos {
             return false;
         }
 
-        String rol = usuarioActual.getTipoUsuario();
-
-        return rol.equals("Administrador")
-                || rol.equals("Superadministrador");
+        return usuarioActual.getTipoUsuario().equals("Administrador");//Determina si es administrador o usuario
     }
 }
