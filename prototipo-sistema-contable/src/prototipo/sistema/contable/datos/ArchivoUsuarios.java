@@ -7,6 +7,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.FileWriter;
+import java.util.Scanner;
 
 import prototipo.sistema.contable.modelo.Usuario;
 
@@ -110,6 +112,48 @@ public class ArchivoUsuarios {
         guardarUsuarios(usuarios);
 
         return true;
+    }
+    
+    // Para modificar usuarios
+    public boolean modificarUsuario(String nombreUsuario, Usuario usuarioModificado) {
+
+    File temporal = new File("usuarios_temp.txt");
+
+    if (!archivo.exists()) {
+        return false;
+    }
+    
+    boolean encontrado = false;
+
+    try {
+    Scanner lector = new Scanner(archivo);
+
+    while (lector.hasNextLine()) {
+        String linea = lector.nextLine();
+
+        Scanner separador = new Scanner(linea);
+        separador.useDelimiter(";");
+
+        String nombre = separador.next();
+        String apellido = separador.next();
+        String correo = separador.next();
+        String genero = separador.next();
+        String usuario = separador.next();
+        String contrasena = separador.next();
+        String tipoUsuario = separador.next();
+
+        separador.close();
+    }
+
+    lector.close();
+
+    } catch (Exception e) {
+    System.out.println(e);
+    return false;
+    }
+
+    return encontrado;
+
     }
 
     // Método para limpiar los datos antes de guardarlos
