@@ -4,17 +4,79 @@ import Seguridad.Autenticacion;
 import prototipo.sistema.contable.modelo.Usuario;
 import javax.swing.JOptionPane;
 import java.io.IOException;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyAdapter;
 
 public class FrmLogin extends javax.swing.JFrame {
 
+    private javax.swing.JLabel lblCapsLock;
+    
     public FrmLogin() {
         initComponents();
+
         caracterOculto = txtContrasena.getEchoChar();
+
+        configurarAvisoCapsLock();
+
         setLocationRelativeTo(null);
         setResizable(false);
     }
 
     private Autenticacion autenticacion = new Autenticacion();
+    
+private void configurarAvisoCapsLock() {
+
+    lblCapsLock = new javax.swing.JLabel("¡Bloq Mayús está activado!");
+
+    lblCapsLock.setFont(new java.awt.Font("SansSerif", 0, 12));
+    lblCapsLock.setForeground(new java.awt.Color(180, 80, 80));
+    lblCapsLock.setVisible(false);
+
+    // Agregar la etiqueta al panel
+    pnlLogin.add(lblCapsLock);
+
+    // Escuchar las teclas del campo de contraseña
+    txtContrasena.addKeyListener(new KeyAdapter() {
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+            actualizarAvisoCapsLock();
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            actualizarAvisoCapsLock();
+        }
+
+    });
+
+    // Posicionar la etiqueta debajo del campo
+    lblCapsLock.setBounds(
+            txtContrasena.getX(),
+            txtContrasena.getY() + txtContrasena.getHeight() + 3,
+            250,
+            20
+    );
+
+    pnlLogin.setComponentZOrder(lblCapsLock, 0);
+}
+
+private void actualizarAvisoCapsLock() {
+
+    try {
+
+        boolean activado = Toolkit.getDefaultToolkit()
+                .getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+
+        lblCapsLock.setVisible(activado);
+
+    } catch (Exception e) {
+
+        lblCapsLock.setVisible(false);
+
+    }
+}
     
     private char caracterOculto;
     @SuppressWarnings("unchecked")
@@ -396,6 +458,7 @@ public class FrmLogin extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnIniciarSesionActionPerformed
 
+    
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
         System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed

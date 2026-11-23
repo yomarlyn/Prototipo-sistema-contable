@@ -85,9 +85,45 @@ public FrmMenuPrincipal(Usuario usuario) {
     pnlSuperior.removeAll();
 
     // Organizar los paneles verticalmente
-    pnlSuperior.setLayout(
-            new java.awt.BorderLayout(0, 0)
-    );
+        pnlSuperior.setLayout(
+                new java.awt.BorderLayout(0, 0)
+        );
+
+        // Colocar el encabezado arriba
+        pnlSuperior.add(
+                pnlEncabezado,
+                java.awt.BorderLayout.NORTH
+        );
+
+        // Colocar el menú debajo del encabezado
+        pnlSuperior.add(
+                pnlMenuSuperior,
+                java.awt.BorderLayout.CENTER
+        );
+        
+         configurarPanelUsuario();
+      
+    new java.awt.event.ComponentAdapter() {
+
+        @Override
+        public void componentResized(
+                java.awt.event.ComponentEvent e) {
+
+            for (java.awt.Component componente :
+                    pnlEncabezado.getComponents()) {
+
+                if (componente instanceof javax.swing.JPanel) {
+
+                    componente.setBounds(
+                        pnlEncabezado.getWidth() - 310,
+                        5,
+                        300,
+                        80
+                    );
+                }
+            }
+        }
+    };
 
     // Colocar el encabezado arriba
     pnlSuperior.add(
@@ -190,6 +226,7 @@ public FrmMenuPrincipal(Usuario usuario) {
             pnlContenido,
             java.awt.BorderLayout.CENTER
     );
+    
 
     // Actualizar la interfaz
     revalidate();
@@ -424,6 +461,7 @@ seleccionarBotonMenu(btnInicio);
     }
     
 } //fin constructor
+
 
 
 private void configurarPantallaInicio() {
@@ -720,7 +758,7 @@ private void configurarPantallaInicio() {
     gbc.weightx = 1;
     gbc.weighty = 1;
     gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
-    gbc.anchor = java.awt.GridBagConstraints.CENTER;
+    gbc.anchor = java.awt.GridBagConstraints.NORTH;
     gbc.insets = new java.awt.Insets(0, 0, 0, 0);
 
     pnlInicio.removeAll();
@@ -788,20 +826,20 @@ private void ajustarPanelInicio() {
 
     // Primer texto: Bienvenido/a al
     gbc.gridy = 0;
-    gbc.weighty = 0.10;
-    gbc.insets = new java.awt.Insets(5, 0, 5, 0);
+    gbc.weighty = 0.05;
+    gbc.insets = new java.awt.Insets(0, 0, 2, 0);
     pnlInicio.add(lblTituloBienvenida, gbc);
 
     // Título principal: Sistema Contable
     gbc.gridy = 1;
-    gbc.weighty = 0.35;
-    gbc.insets = new java.awt.Insets(0, 0, 10, 0);
+    gbc.weighty = 0.15;
+    gbc.insets = new java.awt.Insets(0, 0, 5, 0);
     pnlInicio.add(lblTituloSistema, gbc);
 
     // Descripción
     gbc.gridy = 2;
-    gbc.weighty = 0.20;
-    gbc.insets = new java.awt.Insets(5, 0, 20, 0);
+    gbc.weighty = 0.10;
+    gbc.insets = new java.awt.Insets(0, 0, 10, 0);
     pnlInicio.add(lblDescripcion, gbc);
 
     // Separador: ocupa todo el ancho disponible
@@ -960,7 +998,94 @@ private void estilizarSubmenu(javax.swing.JPopupMenu menu) {
     }
 }
 
+private javax.swing.JPanel pnlUsuario;
 
+
+private void configurarPanelUsuario() {
+
+    pnlUsuario = new javax.swing.JPanel(
+        new java.awt.FlowLayout(
+            java.awt.FlowLayout.RIGHT,
+            15,
+            10
+        )
+    );
+
+    pnlUsuario.setOpaque(false);
+
+    // Quitar los componentes de sus posiciones anteriores
+    pnlEncabezado.remove(lblUsuarioActivo);
+    pnlEncabezado.remove(btnCerrarSesion);
+
+    // Alinear el nombre y el botón
+    lblUsuarioActivo.setHorizontalAlignment(
+        javax.swing.SwingConstants.RIGHT
+    );
+
+    btnCerrarSesion.setHorizontalTextPosition(
+        javax.swing.SwingConstants.RIGHT
+    );
+
+    btnCerrarSesion.setIconTextGap(8);
+
+    pnlUsuario.add(lblUsuarioActivo);
+    pnlUsuario.add(btnCerrarSesion);
+
+    // Agregar el panel al encabezado
+    pnlEncabezado.add(
+        pnlUsuario,
+        new org.netbeans.lib.awtextra.AbsoluteConstraints(
+            0, 0, 1, 90
+        )
+    );
+
+    // Posicionar inicialmente y cada vez que cambie el tamaño
+    posicionarPanelUsuario();
+
+    pnlEncabezado.addComponentListener(
+        new java.awt.event.ComponentAdapter() {
+
+            @Override
+            public void componentResized(
+                    java.awt.event.ComponentEvent e) {
+
+                posicionarPanelUsuario();
+            }
+        }
+    );
+}
+
+private void posicionarPanelUsuario() {
+
+    int ancho = pnlEncabezado.getWidth();
+
+    if (ancho <= 0 || pnlUsuario == null) {
+        return;
+    }
+
+    int anchoUsuario = pnlUsuario.getPreferredSize().width;
+    int altoUsuario = 90;
+
+    int x = ancho - anchoUsuario - 20;
+
+    // Evitar que se superponga con el logo y el nombre del sistema
+    x = Math.max(290, x);
+
+    org.netbeans.lib.awtextra.AbsoluteLayout layout =
+        (org.netbeans.lib.awtextra.AbsoluteLayout) pnlEncabezado.getLayout();
+
+    pnlEncabezado.remove(pnlUsuario);
+
+    pnlEncabezado.add(
+        pnlUsuario,
+        new org.netbeans.lib.awtextra.AbsoluteConstraints(
+            x, 0, anchoUsuario, altoUsuario
+        )
+    );
+
+    pnlEncabezado.revalidate();
+    pnlEncabezado.repaint();
+}
 
     
     @SuppressWarnings("unchecked")
@@ -1112,26 +1237,31 @@ private void estilizarSubmenu(javax.swing.JPopupMenu menu) {
         pnlEncabezado.setAlignmentX(0.0F);
         pnlEncabezado.setAlignmentY(0.0F);
         pnlEncabezado.setPreferredSize(new java.awt.Dimension(1200, 90));
+        pnlEncabezado.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lblNombreSistema.setFont(new java.awt.Font("SansSerif", 1, 20)); // NOI18N
         lblNombreSistema.setForeground(new java.awt.Color(255, 255, 255));
         lblNombreSistema.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblNombreSistema.setText("CONSULT");
+        pnlEncabezado.add(lblNombreSistema, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 20, 128, -1));
 
         lblSubtitulo.setFont(new java.awt.Font("SansSerif", 0, 10)); // NOI18N
         lblSubtitulo.setForeground(new java.awt.Color(221, 198, 207));
         lblSubtitulo.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         lblSubtitulo.setText("SISTEMA CONTABLE");
+        pnlEncabezado.add(lblSubtitulo, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 50, 128, -1));
 
         lblLogo.setFont(new java.awt.Font("Serif", 1, 54)); // NOI18N
         lblLogo.setForeground(new java.awt.Color(184, 141, 157));
         lblLogo.setText("C");
         lblLogo.setAutoscrolls(true);
         lblLogo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pnlEncabezado.add(lblLogo, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 0, -1, 90));
 
         lblUsuarioActivo.setFont(new java.awt.Font("SansSerif", 0, 14)); // NOI18N
         lblUsuarioActivo.setForeground(new java.awt.Color(255, 255, 255));
         lblUsuarioActivo.setText("nombre");
+        pnlEncabezado.add(lblUsuarioActivo, new org.netbeans.lib.awtextra.AbsoluteConstraints(910, 19, -1, -1));
 
         btnCerrarSesion.setBackground(new java.awt.Color(90, 48, 73));
         btnCerrarSesion.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
@@ -1142,40 +1272,7 @@ private void estilizarSubmenu(javax.swing.JPopupMenu menu) {
         btnCerrarSesion.setFocusable(false);
         btnCerrarSesion.setRequestFocusEnabled(false);
         btnCerrarSesion.setRolloverEnabled(false);
-
-        javax.swing.GroupLayout pnlEncabezadoLayout = new javax.swing.GroupLayout(pnlEncabezado);
-        pnlEncabezado.setLayout(pnlEncabezadoLayout);
-        pnlEncabezadoLayout.setHorizontalGroup(
-            pnlEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlEncabezadoLayout.createSequentialGroup()
-                .addGap(105, 105, 105)
-                .addComponent(lblLogo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSubtitulo, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblNombreSistema, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 837, Short.MAX_VALUE)
-                .addGroup(pnlEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblUsuarioActivo, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnCerrarSesion, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(36, 36, 36))
-        );
-        pnlEncabezadoLayout.setVerticalGroup(
-            pnlEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlEncabezadoLayout.createSequentialGroup()
-                .addComponent(lblLogo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlEncabezadoLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(pnlEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNombreSistema)
-                    .addComponent(lblUsuarioActivo))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(pnlEncabezadoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblSubtitulo)
-                    .addComponent(btnCerrarSesion))
-                .addGap(26, 26, 26))
-        );
+        pnlEncabezado.add(btnCerrarSesion, new org.netbeans.lib.awtextra.AbsoluteConstraints(926, 46, -1, -1));
 
         pnlMenuSuperior.setBackground(new java.awt.Color(90, 48, 73));
         pnlMenuSuperior.setAlignmentY(85.0F);
