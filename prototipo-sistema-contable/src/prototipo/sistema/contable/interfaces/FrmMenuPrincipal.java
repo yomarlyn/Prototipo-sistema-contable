@@ -1519,13 +1519,11 @@ private void posicionarPanelUsuario() {
                         .addComponent(lblTituloBienvenida)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(pnlInicioLayout.createSequentialGroup()
-                        .addGroup(pnlInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(pnlInicioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 911, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblTituloSistema)
-                            .addComponent(lblDescripcion))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(pnlInicioLayout.createSequentialGroup()
-                        .addComponent(pnlCaracteristicas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblDescripcion)
+                            .addComponent(pnlCaracteristicas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         pnlInicioLayout.setVerticalGroup(
@@ -1541,7 +1539,7 @@ private void posicionarPanelUsuario() {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(pnlCaracteristicas, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addContainerGap(227, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout pnlContenidoLayout = new javax.swing.GroupLayout(pnlContenido);
@@ -1583,7 +1581,9 @@ private void posicionarPanelUsuario() {
             return;
         }
 
-        // Aquí colocaremos después la apertura de FrmMantenimientoUsuarios.
+        FrmMantenimientoUsuarios ventanaUsuarios = new FrmMantenimientoUsuarios();
+        ventanaUsuarios.setLocationRelativeTo(this);
+        ventanaUsuarios.setVisible(true);
 
     }//GEN-LAST:event_itemUsuarioActionPerformed
 
@@ -1645,19 +1645,16 @@ private void posicionarPanelUsuario() {
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JLabel lblDescripcion;
     private javax.swing.JLabel lblDescripcionControl;
-    private javax.swing.JLabel lblDescripcionControl1;
     private javax.swing.JLabel lblDescripcionOrganizacion;
     private javax.swing.JLabel lblDescripcionSeguridad;
     private javax.swing.JLabel lblIconoControl;
     private javax.swing.JLabel lblIconoOrganizacion;
     private javax.swing.JLabel lblIconoSeguridad;
-    private javax.swing.JLabel lblIocnoControl1;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblNombreSistema;
     private javax.swing.JLabel lblSubtitulo;
     private javax.swing.JLabel lblTituloBienvenida;
     private javax.swing.JLabel lblTituloControl;
-    private javax.swing.JLabel lblTituloControl1;
     private javax.swing.JLabel lblTituloOrganizacion;
     private javax.swing.JLabel lblTituloSeguridad;
     private javax.swing.JLabel lblTituloSistema;
@@ -1669,7 +1666,6 @@ private void posicionarPanelUsuario() {
     private javax.swing.JPanel pnlCaracteristicas;
     private javax.swing.JPanel pnlContenido;
     private javax.swing.JPanel pnlControlTotal;
-    private javax.swing.JPanel pnlControlTotal1;
     private javax.swing.JPanel pnlEncabezado;
     private javax.swing.JPanel pnlInicio;
     private javax.swing.JPanel pnlMenuSuperior;
