@@ -1,5 +1,4 @@
 
-
 package Seguridad;
 
 import java.io.IOException;
@@ -24,6 +23,11 @@ public class Autenticacion {
 
             if (u.getUsuario().equalsIgnoreCase(usuario)) {
 
+                // Impedir el acceso a usuarios inactivos.
+                if (!"ACTIVO".equalsIgnoreCase(u.getEstado())) {
+                    return null;
+                }
+
                 boolean contrasenaCorrecta =
                         GestorContrasenas.verificarContrasena(
                                 contrasena,
@@ -39,4 +43,3 @@ public class Autenticacion {
         return null;
     }
 }
-

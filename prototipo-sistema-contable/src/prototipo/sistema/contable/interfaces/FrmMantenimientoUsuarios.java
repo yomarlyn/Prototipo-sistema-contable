@@ -14,6 +14,9 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
 
     public FrmMantenimientoUsuarios() {
         initComponents();
+        
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+
         setLocationRelativeTo(null);
     }
     

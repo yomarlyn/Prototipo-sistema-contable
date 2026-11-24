@@ -232,9 +232,9 @@ public FrmMenuPrincipal(Usuario usuario) {
     revalidate();
     repaint();
 
-    // --------------------------------
+    
     // MENÚS DESPLEGABLES
-    // --------------------------------
+   
 
     btnInicio.addActionListener(e -> {
         seleccionarBoton(btnInicio);
@@ -275,9 +275,7 @@ public FrmMenuPrincipal(Usuario usuario) {
     seleccionarBoton(btnInicio);
 
 
-// --------------------------------
 // ESTILO Y SELECCIÓN DE BOTONES
-// --------------------------------
 
 java.awt.Color moradoMenu =
         new java.awt.Color(90, 48, 73);
@@ -466,9 +464,8 @@ seleccionarBotonMenu(btnInicio);
 
 private void configurarPantallaInicio() {
 
-    // -----------------------------------
     // PANEL PRINCIPAL DE BIENVENIDA
-    // -----------------------------------
+    
 
     pnlContenido.setLayout(new java.awt.BorderLayout());
     pnlInicio.setLayout(new java.awt.GridBagLayout());
@@ -498,9 +495,9 @@ private void configurarPantallaInicio() {
             )
     );
 
-    // -----------------------------------
+    
     // TITULOS Y DESCRIPCION
-    // -----------------------------------
+    
 
     lblTituloBienvenida.setAlignmentX(
             java.awt.Component.CENTER_ALIGNMENT
@@ -550,9 +547,9 @@ private void configurarPantallaInicio() {
             new java.awt.Color(99, 99, 99)
     );
 
-    // -----------------------------------
+    
     // SEPARADOR
-    // -----------------------------------
+    
 
     jSeparator1.setForeground(
             new java.awt.Color(221, 198, 207)
@@ -564,9 +561,9 @@ private void configurarPantallaInicio() {
             )
     );
 
-    // -----------------------------------
+   
     // PANEL DE CARACTERISTICAS
-    // -----------------------------------
+   
 
     pnlCaracteristicas.setLayout(
             new java.awt.GridLayout(1, 3, 25, 0)
@@ -586,9 +583,9 @@ private void configurarPantallaInicio() {
             new java.awt.Dimension(1000, 220)
     );
 
-    // -----------------------------------
+    
     // ESTILO DE LAS TARJETAS
-    // -----------------------------------
+    
 
     java.awt.Color fondoTarjeta =
             new java.awt.Color(255, 255, 255);
@@ -711,9 +708,9 @@ private void configurarPantallaInicio() {
         tarjetas[i].add(descripciones[i]);
     }
 
-    // -----------------------------------
+    
     // ORGANIZAR CONTENIDO
-    // -----------------------------------
+   
 
     contenido.add(
             javax.swing.Box.createVerticalStrut(15)
@@ -938,8 +935,6 @@ private void seleccionarBoton(javax.swing.JButton seleccionado) {
         }
     }
 }
-
-
 
 
 private void estilizarSubmenu(javax.swing.JPopupMenu menu) {
@@ -1582,6 +1577,15 @@ private void posicionarPanelUsuario() {
         }
 
         FrmMantenimientoUsuarios ventanaUsuarios = new FrmMantenimientoUsuarios();
+
+        // Cuando se cierre el mantenimiento, seleccionar nuevamente Inicio
+        ventanaUsuarios.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosed(java.awt.event.WindowEvent e) {
+                seleccionarBoton(btnInicio);
+            }
+        });
+
         ventanaUsuarios.setLocationRelativeTo(this);
         ventanaUsuarios.setVisible(true);
 

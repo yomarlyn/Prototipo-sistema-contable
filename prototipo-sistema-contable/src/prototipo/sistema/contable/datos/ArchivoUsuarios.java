@@ -1,15 +1,12 @@
-
-
 package prototipo.sistema.contable.datos;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 import prototipo.sistema.contable.modelo.Usuario;
 
@@ -17,12 +14,14 @@ public class ArchivoUsuarios {
 
     private final File archivo;
 
-    // Constructor
     public ArchivoUsuarios() {
         archivo = new File("usuarios.txt");
+
+        System.out.println("Ubicación del archivo: "
+                + archivo.getAbsolutePath());
     }
 
-    // Método para recuperar los usuarios
+    // Recuperar todos los usuarios.
     public ArrayList<Usuario> cargarUsuarios() throws IOException {
 
         ArrayList<Usuario> usuarios = new ArrayList<>();
@@ -46,9 +45,17 @@ public class ArchivoUsuarios {
 
             String[] datos = linea.split(";", -1);
 
-            if (datos.length != 7) {
+            // Se aceptan los registros antiguos de 7 campos
+            // y los nuevos de 8 campos.
+            if (datos.length != 7 && datos.length != 8) {
                 throw new IOException(
                         "Formato incorrecto en la línea " + numeroLinea);
+            }
+
+            String estado = "ACTIVO";
+
+            if (datos.length == 8 && !datos[7].trim().isEmpty()) {
+                estado = datos[7];
             }
 
             Usuario usuario = new Usuario(
@@ -58,7 +65,8 @@ public class ArchivoUsuarios {
                     datos[3],
                     datos[4],
                     datos[5],
-                    datos[6]
+                    datos[6],
+                    estado
             );
 
             usuarios.add(usuario);
@@ -67,7 +75,7 @@ public class ArchivoUsuarios {
         return usuarios;
     }
 
-    // Método para guardar los usuarios
+    // Guardar todos los usuarios, incluyendo su estado.
     public void guardarUsuarios(List<Usuario> usuarios)
             throws IOException {
 
@@ -82,19 +90,33 @@ public class ArchivoUsuarios {
                     limpiar(u.getGenero()) + ";" +
                     limpiar(u.getUsuario()) + ";" +
                     limpiar(u.getContrasena()) + ";" +
-                    limpiar(u.getTipoUsuario());
+                    limpiar(u.getTipoUsuario()) + ";" +
+                    limpiar(u.getEstado());
 
             lineas.add(linea);
         }
 
+        File temporal = new File("usuarios_temp.txt");
+
         Files.write(
-                archivo.toPath(),
+                temporal.toPath(),
                 lineas,
                 StandardCharsets.UTF_8
         );
+
+        try {
+            Files.move(
+                    temporal.toPath(),
+                    archivo.toPath(),
+                    StandardCopyOption.REPLACE_EXISTING
+            );
+        } catch (IOException e) {
+            temporal.delete();
+            throw e;
+        }
     }
 
-    // Método para agregar un usuario
+    // Agregar un usuario nuevo.
     public boolean agregarUsuario(Usuario nuevoUsuario)
             throws IOException {
 
@@ -108,12 +130,15 @@ public class ArchivoUsuarios {
 
         for (Usuario u : usuarios) {
 
+            // No permite repetir nombres de usuario,
+            // incluso si el registro está inactivo.
             if (u.getUsuario().equalsIgnoreCase(
                     nuevoUsuario.getUsuario())) {
-
                 return false;
             }
         }
+
+        nuevoUsuario.setEstado("ACTIVO");
 
         usuarios.add(nuevoUsuario);
 
@@ -122,11 +147,9 @@ public class ArchivoUsuarios {
         return true;
     }
 
-    // Método para modificar un usuario
+    // Modificar un usuario sin perder su estado.
     public boolean modificarUsuario(
             String nombreUsuario, Usuario usuarioModificado) {
-
-        File temporal = new File("usuarios_temp.txt");
 
         if (nombreUsuario == null ||
                 nombreUsuario.trim().isEmpty() ||
@@ -136,257 +159,119 @@ public class ArchivoUsuarios {
             return false;
         }
 
-        if (temporal.exists() && !temporal.delete()) {
-            return false;
-        }
-
-        if (!archivo.exists()) {
-            return false;
-        }
-
-        boolean encontrado = false;
-        boolean usuarioDuplicado = false;
-
         try {
-            Scanner lector = new Scanner(archivo);
 
-            while (lector.hasNextLine()) {
+            ArrayList<Usuario> usuarios = cargarUsuarios();
 
-                String linea = lector.nextLine();
+            Usuario usuarioOriginal = null;
 
-                if (linea.trim().isEmpty()) {
-                    continue;
-                }
+            for (Usuario u : usuarios) {
 
-                String[] datos = linea.split(";", -1);
-
-                if (datos.length != 7) {
-                    lector.close();
-                    temporal.delete();
-                    return false;
-                }
-
-                Scanner separador = new Scanner(linea);
-                separador.useDelimiter(";");
-
-                String nombre = separador.next();
-                String apellido = separador.next();
-                String correo = separador.next();
-                String genero = separador.next();
-                String usuario = separador.next();
-                String contrasena = separador.next();
-                String tipoUsuario = separador.next();
-
-                separador.close();
-
-                if (usuario.equalsIgnoreCase(nombreUsuario)) {
-
-                    encontrado = true;
-
-                    String nuevaLinea =
-                            limpiar(usuarioModificado.getNombre()) + ";" +
-                            limpiar(usuarioModificado.getApellido()) + ";" +
-                            limpiar(usuarioModificado.getCorreo()) + ";" +
-                            limpiar(usuarioModificado.getGenero()) + ";" +
-                            limpiar(usuarioModificado.getUsuario()) + ";" +
-                            limpiar(usuarioModificado.getContrasena()) + ";" +
-                            limpiar(usuarioModificado.getTipoUsuario());
-
-                    if (!escribir(temporal, nuevaLinea)) {
-                        lector.close();
-                        temporal.delete();
-                        return false;
-                    }
-
-                } else {
-
-                    if (usuario.equalsIgnoreCase(
-                            usuarioModificado.getUsuario())) {
-
-                        usuarioDuplicado = true;
-                    }
-
-                    if (!escribir(temporal, linea)) {
-                        lector.close();
-                        temporal.delete();
-                        return false;
-                    }
+                if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
+                    usuarioOriginal = u;
                 }
             }
 
-            lector.close();
+            if (usuarioOriginal == null) {
+                return false;
+            }
 
-        } catch (Exception e) {
+            // Comprobar que el nuevo nombre no pertenezca
+            // a otro registro.
+            for (Usuario u : usuarios) {
 
+                if (u != usuarioOriginal &&
+                        u.getUsuario().equalsIgnoreCase(
+                                usuarioModificado.getUsuario())) {
+                    return false;
+                }
+            }
+
+            // Mantener el estado que tenía el usuario.
+            usuarioModificado.setEstado(
+                    usuarioOriginal.getEstado());
+
+            int posicion = usuarios.indexOf(usuarioOriginal);
+
+            usuarios.set(posicion, usuarioModificado);
+
+            guardarUsuarios(usuarios);
+
+            return true;
+
+        } catch (IOException e) {
             System.out.println(e);
-            temporal.delete();
             return false;
         }
-
-        if (!encontrado || usuarioDuplicado) {
-            temporal.delete();
-            return false;
-        }
-
-        return reemplazarArchivo(temporal);
     }
 
-    // Método para eliminar un usuario
+    // Desactivar un usuario sin eliminar su registro.
     public boolean eliminarUsuario(String nombreUsuario) {
-
-        File temporal = new File("usuarios_temp.txt");
 
         if (nombreUsuario == null ||
                 nombreUsuario.trim().isEmpty()) {
             return false;
         }
 
-        if (temporal.exists() && !temporal.delete()) {
-            return false;
-        }
-
-        if (!archivo.exists()) {
-            return false;
-        }
-
-        boolean encontrado = false;
-
         try {
-            temporal.createNewFile();
 
-            Scanner lector = new Scanner(archivo);
+            ArrayList<Usuario> usuarios = cargarUsuarios();
 
-            while (lector.hasNextLine()) {
+            for (Usuario u : usuarios) {
 
-                String linea = lector.nextLine();
+                if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
 
-                if (linea.trim().isEmpty()) {
-                    continue;
-                }
-
-                String[] datos = linea.split(";", -1);
-
-                if (datos.length != 7) {
-                    lector.close();
-                    temporal.delete();
-                    return false;
-                }
-
-                Scanner separador = new Scanner(linea);
-                separador.useDelimiter(";");
-
-                String nombre = separador.next();
-                String apellido = separador.next();
-                String correo = separador.next();
-                String genero = separador.next();
-                String usuario = separador.next();
-                String contrasena = separador.next();
-                String tipoUsuario = separador.next();
-
-                separador.close();
-
-                if (usuario.equalsIgnoreCase(nombreUsuario)) {
-
-                    encontrado = true;
-
-                } else {
-
-                    if (!escribir(temporal, linea)) {
-                        lector.close();
-                        temporal.delete();
-                        return false;
+                    if ("INACTIVO".equalsIgnoreCase(u.getEstado())) {
+                        return true;
                     }
+
+                    u.setEstado("INACTIVO");
+
+                    guardarUsuarios(usuarios);
+
+                    return true;
                 }
             }
 
-            lector.close();
-
-        } catch (Exception e) {
-
+        } catch (IOException e) {
             System.out.println(e);
-            temporal.delete();
-            return false;
         }
 
-        if (!encontrado) {
-            temporal.delete();
-            return false;
-        }
-
-        return reemplazarArchivo(temporal);
+        return false;
     }
 
-    // Método para reemplazar el archivo original por el temporal
-    private boolean reemplazarArchivo(File temporal) {
+    // Reactivar un usuario anteriormente desactivado.
+    public boolean reactivarUsuario(String nombreUsuario) {
 
-        File respaldo = new File("usuarios_respaldo.txt");
-
-        if (respaldo.exists()) {
-            System.out.println("Ya existe un archivo de respaldo.");
-            temporal.delete();
+        if (nombreUsuario == null ||
+                nombreUsuario.trim().isEmpty()) {
             return false;
         }
-
-        if (archivo.renameTo(respaldo)) {
-
-            if (temporal.renameTo(archivo)) {
-
-                if (!respaldo.delete()) {
-                    System.out.println(
-                            "Advertencia: no se pudo eliminar el respaldo.");
-                }
-
-                return true;
-
-            } else {
-
-                System.out.println(
-                        "No se pudo renombrar el archivo temporal.");
-
-                if (!respaldo.renameTo(archivo)) {
-                    System.out.println(
-                            "No se pudo recuperar el archivo original.");
-                }
-
-                temporal.delete();
-                return false;
-            }
-
-        } else {
-
-            System.out.println(
-                    "No se pudo crear el respaldo del archivo original.");
-
-            temporal.delete();
-            return false;
-        }
-    }
-
-    // Método para escribir en el archivo temporal
-    private boolean escribir(File fichero, String cadena) {
 
         try {
 
-            if (!fichero.exists()) {
-                fichero.createNewFile();
+            ArrayList<Usuario> usuarios = cargarUsuarios();
+
+            for (Usuario u : usuarios) {
+
+                if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
+
+                    u.setEstado("ACTIVO");
+
+                    guardarUsuarios(usuarios);
+
+                    return true;
+                }
             }
 
-            FileWriter escritor = new FileWriter(fichero, true);
-
-            escritor.write(cadena + System.lineSeparator());
-
-            escritor.close();
-
-            return true;
-
-        } catch (Exception e) {
-
+        } catch (IOException e) {
             System.out.println(e);
-            return false;
         }
+
+        return false;
     }
 
-    // Método para limpiar los datos antes de guardarlos
+    // Limpiar los datos antes de guardarlos.
     private String limpiar(String texto) {
 
         if (texto == null) {
@@ -398,5 +283,3 @@ public class ArchivoUsuarios {
                     .replace("\r", " ");
     }
 }
-
-

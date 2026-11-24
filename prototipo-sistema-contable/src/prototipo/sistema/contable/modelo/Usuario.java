@@ -1,10 +1,10 @@
-
 package prototipo.sistema.contable.modelo;
+
 import java.io.Serializable;
 
 public class Usuario implements Serializable {
     private static final long serialVersionUID = 1L;
-    
+
     private String nombre;
     private String apellido;
     private String correo;
@@ -12,11 +12,21 @@ public class Usuario implements Serializable {
     private String usuario;
     private String contrasena;
     private String tipoUsuario;
-    
-    // Constructor de la clase Usuario
+    private String estado;
+
+    // Constructor original: los usuarios nuevos comienzan activos.
     public Usuario(String nombre, String apellido, String correo,
                    String genero, String usuario, String contrasena,
                    String tipoUsuario) {
+
+        this(nombre, apellido, correo, genero, usuario,
+             contrasena, tipoUsuario, "ACTIVO");
+    }
+
+    // Constructor que también permite indicar el estado.
+    public Usuario(String nombre, String apellido, String correo,
+                   String genero, String usuario, String contrasena,
+                   String tipoUsuario, String estado) {
 
         this.nombre = nombre;
         this.apellido = apellido;
@@ -25,12 +35,10 @@ public class Usuario implements Serializable {
         this.usuario = usuario;
         this.contrasena = contrasena;
         this.tipoUsuario = tipoUsuario;
-
+        this.estado = estado;
     }
-    
-    
-    // Métodos Getters
 
+    // Getters
     public String getNombre() {
         return nombre;
     }
@@ -59,9 +67,11 @@ public class Usuario implements Serializable {
         return tipoUsuario;
     }
 
-    
-    // Métodos Setters
+    public String getEstado() {
+        return estado;
+    }
 
+    // Setters
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
@@ -90,4 +100,7 @@ public class Usuario implements Serializable {
         this.tipoUsuario = tipoUsuario;
     }
 
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
 }
