@@ -12,13 +12,405 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
     private ArchivoUsuarios archivoUsuarios = new ArchivoUsuarios();
     private String usuarioOriginal = null;
 
+    
     public FrmMantenimientoUsuarios() {
+        setUndecorated(true);
         initComponents();
-        
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
+        setDefaultCloseOperation(
+            javax.swing.WindowConstants.DISPOSE_ON_CLOSE
+        );
+
+        btnEliminar.setText("Desactivar");
+
+        getContentPane().removeAll();
+        getContentPane().setLayout(
+            new java.awt.BorderLayout()
+        );
+
+        getContentPane().add(
+            pnlMantenimiento,
+            java.awt.BorderLayout.CENTER
+        );
+
+        construirInterfazCodigo();
+
+        setSize(950, 650);
         setLocationRelativeTo(null);
     }
+    
+    
+private int modoActual = 0;
+// 0 = Crear
+// 1 = Modificar
+// 2 = Eliminar
+
+private javax.swing.JPanel panelFormulario;
+private javax.swing.JPanel panelAcciones;
+
+private javax.swing.JButton btnCrearPestana;
+private javax.swing.JButton btnModificarPestana;
+private javax.swing.JButton btnEliminarPestana;
+
+private void construirInterfazCodigo() {
+
+    java.awt.Color fondo =
+        new java.awt.Color(245, 241, 234);
+
+    java.awt.Color morado =
+        new java.awt.Color(89, 51, 75);
+
+    java.awt.Color rosado =
+        new java.awt.Color(239, 226, 232);
+
+    pnlMantenimiento.removeAll();
+    pnlMantenimiento.setLayout(
+        new java.awt.BorderLayout(0, 0)
+    );
+    pnlMantenimiento.setBackground(fondo);
+
+    // ================= ENCABEZADO =================
+
+    javax.swing.JPanel encabezado =
+        new javax.swing.JPanel(
+            new java.awt.BorderLayout()
+        );
+
+    encabezado.setBackground(morado);
+    encabezado.setBorder(
+        javax.swing.BorderFactory.createEmptyBorder(
+            20, 30, 20, 30
+        )
+    );
+
+    lblTitulo.setText("Mantenimiento de usuarios");
+    lblSubtitulo.setText("CONSULT - SISTEMA CONTABLE");
+
+    javax.swing.JPanel textos =
+        new javax.swing.JPanel(
+            new java.awt.GridLayout(2, 1)
+        );
+
+    textos.setOpaque(false);
+    textos.add(lblTitulo);
+    textos.add(lblSubtitulo);
+
+    encabezado.add(
+        textos,
+        java.awt.BorderLayout.WEST
+    );
+
+    encabezado.add(
+        btnSalir,
+        java.awt.BorderLayout.EAST
+    );
+
+    pnlMantenimiento.add(
+        encabezado,
+        java.awt.BorderLayout.NORTH
+    );
+
+    // ================= PESTAÑAS =================
+
+    javax.swing.JPanel panelPestanas =
+        new javax.swing.JPanel(
+            new java.awt.GridLayout(1, 3, 8, 0)
+        );
+
+    panelPestanas.setBackground(fondo);
+    panelPestanas.setBorder(
+        javax.swing.BorderFactory.createEmptyBorder(
+            20, 30, 10, 30
+        )
+    );
+
+    btnCrearPestana = new javax.swing.JButton(
+        "Crear / Registrar usuarios"
+    );
+
+    btnModificarPestana = new javax.swing.JButton(
+        "Modificar usuarios"
+    );
+
+    btnEliminarPestana = new javax.swing.JButton(
+        "Eliminar usuarios"
+    );
+
+    btnCrearPestana.addActionListener(e -> cambiarModo(0));
+    btnModificarPestana.addActionListener(e -> cambiarModo(1));
+    btnEliminarPestana.addActionListener(e -> cambiarModo(2));
+
+    panelPestanas.add(btnCrearPestana);
+    panelPestanas.add(btnModificarPestana);
+    panelPestanas.add(btnEliminarPestana);
+
+    // ================= FORMULARIO =================
+
+    panelFormulario = new javax.swing.JPanel(
+        new java.awt.BorderLayout(0, 15)
+    );
+
+    panelFormulario.setBackground(java.awt.Color.WHITE);
+    panelFormulario.setBorder(
+        javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(
+                new java.awt.Color(221, 198, 207)
+            ),
+            javax.swing.BorderFactory.createEmptyBorder(
+                25, 30, 25, 30
+            )
+        )
+    );
+
+    jLabel3.setText("Datos del usuario");
+
+    panelFormulario.add(
+        jLabel3,
+        java.awt.BorderLayout.NORTH
+    );
+
+    javax.swing.JPanel campos =
+        new javax.swing.JPanel(
+            new java.awt.GridBagLayout()
+        );
+
+    campos.setBackground(java.awt.Color.WHITE);
+
+    addCampo(campos, lblNombre, txtNombre, 0, 0);
+    addCampo(campos, lblApellido, txtApellido, 2, 0);
+
+    addCampo(campos, lblCorreo, txtCorreo, 0, 1);
+    addCampo(campos, lblGenero, cmbGenero, 2, 1);
+
+    addCampo(campos, lblUsuario, txtUsuario, 0, 2);
+    addCampo(campos, lblTipoUsuario, cmbTipoUsuario, 2, 2);
+
+    addCampo(campos, lblContrasena, txtContrasena, 0, 3);
+
+    panelFormulario.add(
+        campos,
+        java.awt.BorderLayout.CENTER
+    );
+
+    // ================= ACCIONES =================
+
+    panelAcciones = new javax.swing.JPanel(
+        new java.awt.FlowLayout(
+            java.awt.FlowLayout.CENTER,
+            12,
+            10
+        )
+    );
+
+    panelAcciones.setBackground(fondo);
+
+    // ================= CONTENIDO CENTRAL =================
+
+    javax.swing.JPanel centro =
+        new javax.swing.JPanel(
+            new java.awt.BorderLayout()
+        );
+
+    centro.setBackground(fondo);
+    centro.setBorder(
+        javax.swing.BorderFactory.createEmptyBorder(
+            0, 30, 20, 30
+        )
+    );
+
+    centro.add(
+        panelPestanas,
+        java.awt.BorderLayout.NORTH
+    );
+
+    centro.add(
+        panelFormulario,
+        java.awt.BorderLayout.CENTER
+    );
+
+    centro.add(
+        panelAcciones,
+        java.awt.BorderLayout.SOUTH
+    );
+
+    pnlMantenimiento.add(
+        centro,
+        java.awt.BorderLayout.CENTER
+    );
+
+    cambiarModo(0);
+
+    revalidate();
+    repaint();
+}
+
+private void addCampo(
+        javax.swing.JPanel panel,
+        javax.swing.JLabel etiqueta,
+        java.awt.Component campo,
+        int columna,
+        int fila) {
+
+    java.awt.GridBagConstraints gbc =
+        new java.awt.GridBagConstraints();
+
+    gbc.gridy = fila;
+    gbc.insets = new java.awt.Insets(10, 10, 10, 10);
+    gbc.anchor = java.awt.GridBagConstraints.WEST;
+
+    if (columna == 0) {
+        gbc.gridx = 0;
+        gbc.weightx = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+
+        panel.add(etiqueta, gbc);
+
+        gbc.gridx = 1;
+        gbc.weightx = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+
+        campo.setPreferredSize(
+            new java.awt.Dimension(250, 36)
+        );
+
+        panel.add(campo, gbc);
+
+    } else {
+        gbc.gridx = 2;
+        gbc.weightx = 0;
+        gbc.fill = java.awt.GridBagConstraints.NONE;
+
+        panel.add(etiqueta, gbc);
+
+        gbc.gridx = 3;
+        gbc.weightx = 1;
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+
+        campo.setPreferredSize(
+            new java.awt.Dimension(250, 36)
+        );
+
+        panel.add(campo, gbc);
+    }
+} // fin metodo
+
+
+private void cambiarModo(int modo) {
+
+    modoActual = modo;
+
+    java.awt.Color rosado =
+        new java.awt.Color(239, 226, 232);
+
+    java.awt.Color blanco =
+        new java.awt.Color(255, 255, 255);
+
+    java.awt.Color morado =
+        new java.awt.Color(89, 51, 75);
+
+    // Estilo de las tres pestañas
+
+    estilizarPestana(btnCrearPestana, modo == 0);
+    estilizarPestana(btnModificarPestana, modo == 1);
+    estilizarPestana(btnEliminarPestana, modo == 2);
+
+    // Actualizar el título de la operación
+
+    if (modo == 0) {
+        jLabel3.setText("Registrar nuevo usuario");
+    } else if (modo == 1) {
+        jLabel3.setText("Modificar datos del usuario");
+    } else {
+        jLabel3.setText("Desactivar usuario");
+    }
+
+    // Cambiar botones inferiores
+
+    panelAcciones.removeAll();
+
+    if (modo == 0) {
+        panelAcciones.add(btnRegistrar);
+    }
+
+    if (modo == 1) {
+        panelAcciones.add(btnConsultar);
+        panelAcciones.add(btnModificar);
+    }
+
+    if (modo == 2) {
+        panelAcciones.add(btnConsultar);
+        panelAcciones.add(btnEliminar);
+    }
+
+    panelAcciones.add(btnLimpiar);
+    panelAcciones.add(btnSalir);
+
+    // Campos editables según la operación
+
+    boolean editable = modo != 2;
+
+    txtNombre.setEditable(editable);
+    txtApellido.setEditable(editable);
+    txtCorreo.setEditable(editable);
+    txtContrasena.setEditable(editable);
+
+    cmbGenero.setEnabled(editable);
+    cmbTipoUsuario.setEnabled(editable);
+
+    txtUsuario.setEditable(true);
+
+    // En registro, limpiar para comenzar desde cero
+
+    if (modo == 0) {
+        limpiarCampos();
+    }
+
+    panelAcciones.revalidate();
+    panelAcciones.repaint();
+
+    pnlMantenimiento.revalidate();
+    pnlMantenimiento.repaint();
+}
+
+private void estilizarPestana(
+        javax.swing.JButton boton,
+        boolean seleccionada) {
+
+    java.awt.Color fondo = seleccionada
+        ? new java.awt.Color(239, 226, 232)
+        : java.awt.Color.WHITE;
+
+    boton.setBackground(fondo);
+    boton.setForeground(
+        new java.awt.Color(89, 51, 75)
+    );
+
+    boton.setFont(
+        new java.awt.Font(
+            "SansSerif",
+            java.awt.Font.BOLD,
+            13
+        )
+    );
+
+    boton.setOpaque(true);
+    boton.setBorderPainted(true);
+    boton.setFocusPainted(false);
+
+    boton.setBorder(
+        javax.swing.BorderFactory.createCompoundBorder(
+            javax.swing.BorderFactory.createLineBorder(
+                new java.awt.Color(221, 198, 207)
+            ),
+            javax.swing.BorderFactory.createEmptyBorder(
+                12, 10, 12, 10
+            )
+        )
+    );
+}
+// fin metodo cambiarmodo
+
+
     
     private void limpiarCampos() {//Método Limpiar
 
@@ -38,14 +430,15 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        pnlMantenimiento = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         lblTitulo = new javax.swing.JLabel();
         lblSubtitulo = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
-        lblNombre = new javax.swing.JLabel();
         lblApellido = new javax.swing.JLabel();
+        lblNombre = new javax.swing.JLabel();
         lblCorreo = new javax.swing.JLabel();
         lblGenero = new javax.swing.JLabel();
         lblUsuario = new javax.swing.JLabel();
@@ -60,14 +453,16 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
         cmbTipoUsuario = new javax.swing.JComboBox<>();
         btnRegistrar = new javax.swing.JButton();
         btnModificar = new javax.swing.JButton();
-        btnLimpiar = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
+        btnLimpiar = new javax.swing.JButton();
         btnConsultar = new javax.swing.JButton();
         btnSalir = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Mantenimiento de usuarios - CONSULT");
         setBackground(new java.awt.Color(245, 241, 234));
+
+        pnlMantenimiento.setBackground(new java.awt.Color(245, 241, 235));
 
         jPanel1.setBackground(new java.awt.Color(89, 51, 75));
 
@@ -109,23 +504,26 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblSubtitulo)
-                    .addComponent(lblTitulo))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblTitulo)
+                        .addGap(87, 87, 87))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(lblSubtitulo)
+                        .addGap(154, 154, 154))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(lblTitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(2, 2, 2)
                 .addComponent(lblSubtitulo)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
@@ -133,13 +531,13 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(89, 51, 75));
         jLabel3.setText("Datos del usuario");
 
-        lblNombre.setFont(new java.awt.Font("SansSerif", 1, 13)); // NOI18N
-        lblNombre.setForeground(new java.awt.Color(89, 51, 75));
-        lblNombre.setText("Nombre");
-
         lblApellido.setFont(new java.awt.Font("SansSerif", 1, 13)); // NOI18N
         lblApellido.setForeground(new java.awt.Color(89, 51, 75));
         lblApellido.setText("Apellido");
+
+        lblNombre.setFont(new java.awt.Font("SansSerif", 1, 13)); // NOI18N
+        lblNombre.setForeground(new java.awt.Color(89, 51, 75));
+        lblNombre.setText("Nombre");
 
         lblCorreo.setFont(new java.awt.Font("SansSerif", 1, 13)); // NOI18N
         lblCorreo.setForeground(new java.awt.Color(89, 51, 75));
@@ -223,18 +621,6 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
             }
         });
 
-        btnLimpiar.setBackground(new java.awt.Color(163, 77, 88));
-        btnLimpiar.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
-        btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
-        btnLimpiar.setText("Limpiar");
-        btnLimpiar.setBorderPainted(false);
-        btnLimpiar.setFocusPainted(false);
-        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLimpiarActionPerformed(evt);
-            }
-        });
-
         btnEliminar.setBackground(new java.awt.Color(140, 90, 120));
         btnEliminar.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
         btnEliminar.setForeground(new java.awt.Color(255, 255, 255));
@@ -244,6 +630,18 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
         btnEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnEliminarActionPerformed(evt);
+            }
+        });
+
+        btnLimpiar.setBackground(new java.awt.Color(163, 77, 88));
+        btnLimpiar.setFont(new java.awt.Font("SansSerif", 1, 14)); // NOI18N
+        btnLimpiar.setForeground(new java.awt.Color(255, 255, 255));
+        btnLimpiar.setText("Limpiar");
+        btnLimpiar.setBorderPainted(false);
+        btnLimpiar.setFocusPainted(false);
+        btnLimpiar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarActionPerformed(evt);
             }
         });
 
@@ -271,134 +669,235 @@ public class FrmMantenimientoUsuarios extends javax.swing.JFrame {
             }
         });
 
+        javax.swing.GroupLayout pnlMantenimientoLayout = new javax.swing.GroupLayout(pnlMantenimiento);
+        pnlMantenimiento.setLayout(pnlMantenimientoLayout);
+        pnlMantenimientoLayout.setHorizontalGroup(
+            pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3)
+                            .addComponent(txtContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                        .addGap(84, 84, 84)
+                        .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                                .addComponent(cmbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(84, 84, 84)
+                                .addComponent(cmbTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                                .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnRegistrar, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnModificar)
+                .addGap(26, 26, 26))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(294, 294, 294)
+                    .addComponent(lblNombre)
+                    .addContainerGap(546, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(293, 293, 293)
+                    .addComponent(lblApellido)
+                    .addContainerGap(544, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(260, 260, 260)
+                    .addComponent(lblCorreo)
+                    .addContainerGap(512, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(296, 296, 296)
+                    .addComponent(lblGenero)
+                    .addContainerGap(547, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(259, 259, 259)
+                    .addComponent(lblUsuario)
+                    .addContainerGap(510, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(283, 283, 283)
+                    .addComponent(lblContrasena)
+                    .addContainerGap(535, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(218, 218, 218)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(469, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(218, 218, 218)
+                    .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(469, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(218, 218, 218)
+                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(469, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(270, 270, 270)
+                    .addComponent(lblTipoUsuario)
+                    .addContainerGap(521, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(271, 271, 271)
+                    .addComponent(btnLimpiar, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(522, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(275, 275, 275)
+                    .addComponent(btnEliminar)
+                    .addContainerGap(527, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(269, 269, 269)
+                    .addComponent(btnConsultar)
+                    .addContainerGap(521, Short.MAX_VALUE)))
+        );
+        pnlMantenimientoLayout.setVerticalGroup(
+            pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMantenimientoLayout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 59, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                        .addGap(120, 120, 120)
+                        .addComponent(cmbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27)
+                        .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnSalir)
+                            .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnRegistrar)
+                            .addComponent(btnModificar))
+                        .addGap(42, 42, 42))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlMantenimientoLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cmbTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(119, 119, 119))))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(42, 42, 42)
+                    .addComponent(lblNombre)
+                    .addContainerGap(321, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(42, 42, 42)
+                    .addComponent(lblApellido)
+                    .addContainerGap(321, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(42, 42, 42)
+                    .addComponent(lblCorreo)
+                    .addContainerGap(321, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(42, 42, 42)
+                    .addComponent(lblGenero)
+                    .addContainerGap(321, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(41, 41, 41)
+                    .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(321, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(42, 42, 42)
+                    .addComponent(lblContrasena)
+                    .addContainerGap(321, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(32, 32, 32)
+                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(311, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(32, 32, 32)
+                    .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(311, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(32, 32, 32)
+                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(311, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(42, 42, 42)
+                    .addComponent(lblTipoUsuario)
+                    .addContainerGap(321, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(37, 37, 37)
+                    .addComponent(btnLimpiar)
+                    .addContainerGap(317, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(37, 37, 37)
+                    .addComponent(btnEliminar)
+                    .addContainerGap(317, Short.MAX_VALUE)))
+            .addGroup(pnlMantenimientoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(pnlMantenimientoLayout.createSequentialGroup()
+                    .addGap(37, 37, 37)
+                    .addComponent(btnConsultar)
+                    .addContainerGap(317, Short.MAX_VALUE)))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblUsuario)
-                            .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblCorreo)
-                            .addComponent(lblTipoUsuario)
-                            .addComponent(cmbTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(36, 36, 36)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(cmbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblGenero)
-                            .addComponent(lblApellido)
-                            .addComponent(lblContrasena)
-                            .addComponent(txtContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 203, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(btnRegistrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(btnLimpiar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnModificar)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnEliminar)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(btnConsultar))))))
-                    .addComponent(lblNombre))
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addComponent(pnlMantenimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 422, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(12, 12, 12)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblNombre)
-                    .addComponent(lblApellido))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNombre, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtApellido, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCorreo)
-                    .addComponent(lblGenero))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCorreo, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblContrasena))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtContrasena, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTipoUsuario)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbTipoUsuario, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnRegistrar)
-                    .addComponent(btnModificar)
-                    .addComponent(btnEliminar)
-                    .addComponent(btnConsultar))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLimpiar)
-                    .addComponent(btnSalir))
-                .addGap(0, 35, Short.MAX_VALUE))
+            .addComponent(pnlMantenimiento, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-       String usuario = txtUsuario.getText().trim();
+         
+         String usuario = txtUsuario.getText().trim();
 
-if (usuario.isEmpty()) {
+         if (usuario.isEmpty()) {
+             JOptionPane.showMessageDialog(this,
+                     "Escriba o consulte el usuario que desea desactivar.");
+             return;
+         }
 
-JOptionPane.showMessageDialog(this,
-"Escriba o consulte el usuario que desea eliminar.");
+         int confirmacion = JOptionPane.showConfirmDialog(
+                 this,
+                 "¿Está seguro de que desea desactivar este usuario?",
+                 "Confirmar desactivación",
+                 JOptionPane.YES_NO_OPTION
+         );
 
-return;
-}
+         if (confirmacion == JOptionPane.YES_OPTION) {
+             boolean resultado = archivoUsuarios.eliminarUsuario(usuario);
 
-int confirmacion = JOptionPane.showConfirmDialog(
-this,
-"¿Está seguro de que desea eliminar este usuario?",
-"Confirmar eliminación",
-JOptionPane.YES_NO_OPTION
-);
-
-if (confirmacion == JOptionPane.YES_OPTION) {
-
-boolean resultado = archivoUsuarios.eliminarUsuario(usuario);
-
-if (resultado) {
-
-JOptionPane.showMessageDialog(this,
-"Usuario eliminado correctamente.");
-
-limpiarCampos();
-
-} else {
-
-JOptionPane.showMessageDialog(this,
-"No se pudo eliminar el usuario. Verifique que exista.");
-    }
-}
+             if (resultado) {
+                 JOptionPane.showMessageDialog(this,
+                         "Usuario desactivado correctamente.");
+                 limpiarCampos();
+             } else {
+                 JOptionPane.showMessageDialog(this,
+                         "No se pudo desactivar el usuario. Verifique que exista.");
+             }
+         }
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
@@ -481,9 +980,7 @@ String usuario = txtUsuario.getText().trim();
 String contrasena = new String(txtContrasena.getPassword());
 String tipoUsuario = cmbTipoUsuario.getSelectedItem().toString();
 
-if (nombre.isEmpty() || apellido.isEmpty() ||
-        correo.isEmpty() || usuario.isEmpty() ||
-        contrasena.isEmpty() ||
+if (nombre.isEmpty() || apellido.isEmpty() || usuario.isEmpty() ||
         genero.equals("Seleccione...") ||
         tipoUsuario.equals("Seleccione...")) {
 
@@ -612,7 +1109,7 @@ try {
             txtCorreo.setText(u.getCorreo());
             cmbGenero.setSelectedItem(u.getGenero());
             txtUsuario.setText(u.getUsuario());
-            txtContrasena.setText(u.getContrasena());
+            txtContrasena.setText("");
             cmbTipoUsuario.setSelectedItem(u.getTipoUsuario());
 
             usuarioOriginal = u.getUsuario();
@@ -647,6 +1144,8 @@ try {
       limpiarCampos();
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
+  
+    
     /**
      * @param args the command line arguments
      */
@@ -704,6 +1203,7 @@ try {
     private javax.swing.JLabel lblTipoUsuario;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JLabel lblUsuario;
+    private javax.swing.JPanel pnlMantenimiento;
     private javax.swing.JTextField txtApellido;
     private javax.swing.JPasswordField txtContrasena;
     private javax.swing.JTextField txtCorreo;

@@ -9,6 +9,13 @@ import javax.swing.JMenuItem;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import prototipo.sistema.contable.modelo.Usuario;
+import java.awt.Point;
+import java.awt.Dimension;
+import java.awt.IllegalComponentStateException;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  *
@@ -236,9 +243,6 @@ public FrmMenuPrincipal(Usuario usuario) {
     // MENÚS DESPLEGABLES
    
 
-    btnInicio.addActionListener(e -> {
-        seleccionarBoton(btnInicio);
-    });
     
     btnMantenimientos.addActionListener(e -> {
         seleccionarBoton(btnMantenimientos);
@@ -331,7 +335,9 @@ for (javax.swing.JButton btn : botones) {
             }
         }
     );
-}
+    
+    
+} // fin del constructor
 
 // Método para cambiar el botón seleccionado
 
@@ -367,9 +373,8 @@ for (javax.swing.JButton btn : botones) {
     });
 }
 
+btnInicio.addActionListener(e -> mostrarInicio());
 
-
-btnInicio.addActionListener(e -> seleccionarBotonMenu(btnInicio));
 
 btnMantenimientos.addActionListener(e ->
     seleccionarBotonMenu(btnMantenimientos));
@@ -774,11 +779,14 @@ private void configurarPantallaInicio() {
 
     pnlInicio.revalidate();
     pnlInicio.repaint();
+    
+   
 }
 
 
-private Usuario usuarioActual;
 
+
+private Usuario usuarioActual;
 private javax.swing.JButton botonMenuSeleccionado;
 
 private final java.awt.Color colorMenu =
@@ -908,6 +916,20 @@ private void ajustarTextoBienvenida() {
         new java.awt.Font("SansSerif", java.awt.Font.PLAIN,
             (int) (18 * escala))
     );
+}
+
+private void mostrarEnContenido(javax.swing.JComponent panel) {
+    pnlContenido.removeAll();
+    pnlContenido.setLayout(new java.awt.BorderLayout());
+    pnlContenido.add(panel, java.awt.BorderLayout.CENTER);
+    pnlContenido.revalidate();
+    pnlContenido.repaint();
+}
+
+private void mostrarInicio() {
+    mostrarEnContenido(pnlInicio);
+    seleccionarBotonMenu(btnInicio);
+    seleccionarBoton(btnInicio);
 }
 
 private void seleccionarBoton(javax.swing.JButton seleccionado) {
@@ -1081,6 +1103,9 @@ private void posicionarPanelUsuario() {
     pnlEncabezado.revalidate();
     pnlEncabezado.repaint();
 }
+
+
+
 
     
     @SuppressWarnings("unchecked")
@@ -1534,7 +1559,7 @@ private void posicionarPanelUsuario() {
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(pnlCaracteristicas, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(227, Short.MAX_VALUE))
+                .addContainerGap(223, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout pnlContenidoLayout = new javax.swing.GroupLayout(pnlContenido);
@@ -1562,35 +1587,28 @@ private void posicionarPanelUsuario() {
     }//GEN-LAST:event_btnProcesosActionPerformed
 
     private void itemUsuarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemUsuarioActionPerformed
-
-
-        if (!usuarioActual.getTipoUsuario().equalsIgnoreCase("Administrador")) {
-
+         if (!usuarioActual.getTipoUsuario().equalsIgnoreCase("Administrador")) {
             javax.swing.JOptionPane.showMessageDialog(
                     this,
                     "No tienes permisos para acceder a esta opción.",
                     "Acceso denegado",
                     javax.swing.JOptionPane.WARNING_MESSAGE
             );
-
             return;
         }
 
-        FrmMantenimientoUsuarios ventanaUsuarios = new FrmMantenimientoUsuarios();
+        FrmMantenimientoUsuariosPanel panelUsuarios = new FrmMantenimientoUsuariosPanel();
+        panelUsuarios.setAccionSalir(this::mostrarInicio);
 
-        // Cuando se cierre el mantenimiento, seleccionar nuevamente Inicio
-        ventanaUsuarios.addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent e) {
-                seleccionarBoton(btnInicio);
-            }
-        });
+        mostrarEnContenido(panelUsuarios);
 
-        ventanaUsuarios.setLocationRelativeTo(this);
-        ventanaUsuarios.setVisible(true);
-
+        seleccionarBotonMenu(btnMantenimientos);
+        seleccionarBoton(btnMantenimientos);
     }//GEN-LAST:event_itemUsuarioActionPerformed
+// fin itemUsuarioActionPerformed
+   
 
+    
     /**
      * @param args the command line arguments
      */

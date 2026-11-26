@@ -148,8 +148,19 @@ public class ArchivoUsuarios {
     }
 
     // Modificar un usuario sin perder su estado.
+ 
+    // Modificar un usuario conservando su estado actual.
     public boolean modificarUsuario(
             String nombreUsuario, Usuario usuarioModificado) {
+
+        return modificarUsuario(nombreUsuario, usuarioModificado, null);
+    }
+
+    // Modificar un usuario permitiendo cambiar su estado.
+    public boolean modificarUsuario(
+            String nombreUsuario,
+            Usuario usuarioModificado,
+            String nuevoEstado) {
 
         if (nombreUsuario == null ||
                 nombreUsuario.trim().isEmpty() ||
@@ -160,15 +171,13 @@ public class ArchivoUsuarios {
         }
 
         try {
-
             ArrayList<Usuario> usuarios = cargarUsuarios();
-
             Usuario usuarioOriginal = null;
 
             for (Usuario u : usuarios) {
-
                 if (u.getUsuario().equalsIgnoreCase(nombreUsuario)) {
                     usuarioOriginal = u;
+                    break;
                 }
             }
 
@@ -176,10 +185,8 @@ public class ArchivoUsuarios {
                 return false;
             }
 
-            // Comprobar que el nuevo nombre no pertenezca
-            // a otro registro.
+            // Comprobar que el nombre no pertenezca a otro usuario.
             for (Usuario u : usuarios) {
-
                 if (u != usuarioOriginal &&
                         u.getUsuario().equalsIgnoreCase(
                                 usuarioModificado.getUsuario())) {
@@ -187,12 +194,14 @@ public class ArchivoUsuarios {
                 }
             }
 
-            // Mantener el estado que tenía el usuario.
-            usuarioModificado.setEstado(
-                    usuarioOriginal.getEstado());
+            // Si no se indica un estado nuevo, conservar el original.
+            if (nuevoEstado == null) {
+                usuarioModificado.setEstado(usuarioOriginal.getEstado());
+            } else {
+                usuarioModificado.setEstado(nuevoEstado);
+            }
 
             int posicion = usuarios.indexOf(usuarioOriginal);
-
             usuarios.set(posicion, usuarioModificado);
 
             guardarUsuarios(usuarios);
@@ -205,6 +214,7 @@ public class ArchivoUsuarios {
         }
     }
 
+    
     // Desactivar un usuario sin eliminar su registro.
     public boolean eliminarUsuario(String nombreUsuario) {
 
