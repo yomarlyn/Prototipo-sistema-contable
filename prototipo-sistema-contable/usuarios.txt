@@ -1,0 +1,6 @@
+Maria;Mencia;maria@gmail.com;Femenino;maria01;o5bT99WcEde7rgQ8RLvkew==:6OHJ38s5DQzIxa6H4ItG4QsfBw8nYY03vhcPyZ7Lo/s=;Administrador;ACTIVO
+Maria;Mencia;maria@gmail.com;Femenino;maria02;LaqjTr4fGn0DbkWTsIC5vg==:J6/oW0xKXNh16JjEDxjxN85h7owNljoEooeQPIjWKMk=;Administrador;ACTIVO
+Elvira;Martinez;elvira@gmail.com;Femenino;elvira07;8ghObzHy1fSRGxJ9/OsAOg==:cMvKwJwI1pAnwJAaj4YcGCi44rL64Yf3wjr6WxADiKQ=;Usuario normal;ACTIVO
+Fausto;Martinez;faustomartinez@gmail.com;Masculino;FaustoProfe;QFeLzOzc8gPlPHimKut1iA==:6PuA2VngZpKIC+SSNQ4dJZuY/JuU32llcVVEzUdtF5Q=;Administrador;ACTIVO
+MarcosAlexis;Jimenez;marcos24alexis@gmail.com;Masculino;Marcos_24;reYrzUHb5vSi5HrDwZ2KjA==:IWEMzDGq17Jlsi2atlG/Dw/Ei8wtVSBaLQnkt2iRiLg=;Administrador;INACTIVO
+papa;mama;fmj@gmail.com;Masculino;fmj;Bcy6mcoFukPT9aNW8LQXGw==:5P8WM+URytq8kUniyO2dqByLtKe0/5Ed8bvSUHbkpCM=;Usuario normal;ACTIVO
